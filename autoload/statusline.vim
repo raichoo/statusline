@@ -56,7 +56,7 @@ endfunction
 
 function! statusline#ActiveEdit()
   setlocal statusline=%#StatusLineModeBold#\ %{statusline#Mode()}
-  setlocal statusline+=\ %#StatusLine#\ %<%f\ %R
+  setlocal statusline+=\ %#StatusLine#\ %(%m\ %)%<%f\ %R
   setlocal statusline+=%=
   setlocal statusline+=%{&ft}
   setlocal statusline+=%#LanguageHealth#%(\ %{get(g:,'language_health','')}%)
@@ -66,7 +66,7 @@ function! statusline#ActiveEdit()
 endfunction
 
 function! statusline#InactiveEdit()
-  setlocal statusline=%#StatusLine#%f
+  setlocal statusline=%#StatusLine#\ %(%m\ %)%<%f
   setlocal statusline+=%=
   setlocal statusline+=%#StatusLineErrorsInactive#%(\ %{get(b:,'statusline_errors','')}\ %)
 endfunction
