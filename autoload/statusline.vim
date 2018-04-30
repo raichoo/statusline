@@ -1,9 +1,3 @@
-if exists("g:loaded_statusline")
-  finish
-endif
-
-let g:loaded_statusline= 1
-
 hi StatusLineFile guibg=#293739 guifg=#FFFFFF
 
 hi StatusLineModeInsert guifg=#282C34 guibg=#66D9EF gui=bold
