@@ -18,6 +18,8 @@ hi StatusLineModeTerminalBold guifg=#282C34 guibg=#F92672 gui=bold
 hi StatusLineErrorsActive guifg=#282C34 guibg=#FD971F gui=bold
 hi StatusLineErrorsInactive guifg=#FD971F guibg=#455354 gui=bold
 
+set statusline=%#StatusLineModeNormal#\ %f
+
 function! statusline#Mode()
   let l:mode = mode()
 
@@ -79,15 +81,14 @@ function! statusline#ActiveTerm()
 endfunction
 
 function! statusline#InactiveTerm()
-  setlocal statusline=%#StatusLine#%{b:term_title}
+  setlocal statusline=%#StatusLine#\ %{b:term_title}
 endfunction
 
-function! statusline#Active()
-  if &buftype != 'terminal'
-    call statusline#ActiveEdit()
-  else
-    call statusline#ActiveTerm()
-  endif
+function! statusline#QuickfixActive()
+    setlocal statusline=%#StatusLineModeNormal#\ %f
+    setlocal statusline+=\ %#StatusLine#\ %{w:quickfix_title}
+    setlocal statusline+=%=
+    setlocal statusline+=%#StatusLineModeNormal#\ %3p%%\ %#StatusLineModeNormalBold#%4l%#StatusLineModeNormal#:%-4L\  "trailing
 endfunction
 
 function! statusline#CheckMixed()
@@ -138,10 +139,24 @@ function! statusline#BufferState()
   let b:statusline_errors = join(l:checks, ' ')
 endfunction
 
-function! statusline#Inactive()
-  if &buftype != 'terminal'
-    call statusline#InactiveEdit()
+function! statusline#Active()
+  if &buftype == ''
+    call statusline#ActiveEdit()
+  elseif &buftype == 'terminal'
+    call statusline#ActiveTerm()
+  elseif &buftype == 'quickfix'
+    call statusline#QuickfixActive()
   else
+    setlocal statusline=
+  endif
+endfunction
+
+function! statusline#Inactive()
+  if &buftype == ''
+    call statusline#InactiveEdit()
+  elseif &buftype == 'terminal'
     call statusline#InactiveTerm()
+  else
+    setlocal statusline=\ %#StatusLine#%f
   endif
 endfunction
