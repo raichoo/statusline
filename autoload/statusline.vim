@@ -51,6 +51,10 @@ function! statusline#Mode()
     hi! link StatusLineMode StatusLineModeTerminal
     hi! link StatusLineModeBold StatusLineModeTerminalBold
     return 'TERMINAL'
+  elseif l:mode is# 'c'
+    hi! link StatusLineMode StatusLineModeNormal
+    hi! link StatusLineModeBold StatusLineModeNormalBold
+    return 'NORMAL'
   else
     return l:mode
   endif
