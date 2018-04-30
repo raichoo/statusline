@@ -6,7 +6,7 @@ let g:loaded_statusline= 1
 
 augroup statusline
   au!
-  au TermOpen,VimEnter,WinEnter,BufWinEnter * call statusline#Active()
+  au TermOpen,VimEnter,WinEnter,BufWinEnter,FileType * call statusline#Active()
   au WinLeave * call statusline#Inactive()
   au BufRead,BufWritePost * call statusline#BufferState()
 augroup end
