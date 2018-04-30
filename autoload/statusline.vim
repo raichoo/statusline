@@ -23,14 +23,14 @@ set statusline=%#StatusLineModeNormal#\ %f
 function! statusline#Mode()
   let l:mode = mode()
 
-  if l:mode is# 'i'
-    hi! link StatusLineMode StatusLineModeInsert
-    hi! link StatusLineModeBold StatusLineModeInsertBold
-    return 'INSERT'
-  elseif l:mode is# 'n'
+  if l:mode is# 'n'
     hi! link StatusLineMode StatusLineModeNormal
     hi! link StatusLineModeBold StatusLineModeNormalBold
     return 'NORMAL'
+  elseif l:mode is# 'i'
+    hi! link StatusLineMode StatusLineModeInsert
+    hi! link StatusLineModeBold StatusLineModeInsertBold
+    return 'INSERT'
   elseif l:mode is# 'v'
     hi! link StatusLineMode StatusLineModeVisual
     hi! link StatusLineModeBold StatusLineModeVisualBold
