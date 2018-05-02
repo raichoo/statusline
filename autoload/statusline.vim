@@ -14,6 +14,8 @@ hi StatusLineModeReplace guifg=#282C34 guibg=#EF5939 gui=none
 hi StatusLineModeReplaceBold guifg=#282C34 guibg=#EF5939 gui=bold
 hi StatusLineModeTerminal guifg=#282C34 guibg=#F92672 gui=none
 hi StatusLineModeTerminalBold guifg=#282C34 guibg=#F92672 gui=bold
+hi StatusLineModeCommand guifg=#282C34 guibg=#B8E673 gui=none
+hi StatusLineModeCommandBold guifg=#282C34 guibg=#B8E673 gui=bold
 
 hi StatusLineErrorsActive guifg=#282C34 guibg=#FD971F gui=bold
 hi StatusLineErrorsInactive guifg=#FD971F guibg=#455354 gui=bold
@@ -52,9 +54,9 @@ function! statusline#Mode()
     hi! link StatusLineModeBold StatusLineModeTerminalBold
     return 'TERMINAL'
   elseif l:mode is# 'c'
-    hi! link StatusLineMode StatusLineModeNormal
-    hi! link StatusLineModeBold StatusLineModeNormalBold
-    return 'NORMAL'
+    hi! link StatusLineMode StatusLineModeCommand
+    hi! link StatusLineModeBold StatusLineModeCommandBold
+    return 'COMMAND'
   else
     return l:mode
   endif
