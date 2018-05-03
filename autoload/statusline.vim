@@ -87,12 +87,12 @@ function! statusline#ActiveTerm()
 endfunction
 
 function! statusline#InactiveTerm()
-  setlocal statusline=%#StatusLine#\ %{b:term_title}
+  setlocal statusline=%#StatusLine#\ %<%{b:term_title}
 endfunction
 
 function! statusline#QuickfixActive()
     setlocal statusline=%#StatusLineModeNormal#\ %f
-    setlocal statusline+=\ %#StatusLine#\ %{w:quickfix_title}
+    setlocal statusline+=\ %#StatusLine#\ %<%{w:quickfix_title}
     setlocal statusline+=%=
     setlocal statusline+=%#StatusLineModeNormal#\ %3p%%\ %#StatusLineModeNormalBold#%4l%#StatusLineModeNormal#:%-4L\  "trailing
 endfunction
