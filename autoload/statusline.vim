@@ -83,11 +83,13 @@ function! statusline#ActiveTerm()
   setlocal statusline=%#StatusLineModeBold#\ %{statusline#Mode()}
   setlocal statusline+=\ %#StatusLine#\ %<%{b:term_title}
   setlocal statusline+=%=
-  setlocal statusline+=%#StatusLineMode#\ %3p%%\ %#StatusLineModeBold#LN\ %3l%#StatusLineMode#:%-3c\  "trailing
+  setlocal statusline+=%#StatusLineMode#\ %3p%%\ %#StatusLineModeBold#PID\ %{b:terminal_job_pid}%#StatusLineMode#:%{b:terminal_job_id}\  "trailing
 endfunction
 
 function! statusline#InactiveTerm()
   setlocal statusline=%#StatusLine#\ %<%{b:term_title}
+  setlocal statusline+=%=
+  setlocal statusline+=PID\ %{b:terminal_job_pid}:%{b:terminal_job_id}\  "trailing
 endfunction
 
 function! statusline#QuickfixActive()
