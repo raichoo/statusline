@@ -135,10 +135,21 @@ function! statusline#CheckFormat()
   endif
 endfunction
 
+function! statusline#CheckNewline()
+  let l:newline = search('\n\%$', 'nw')
+
+  if l:newline
+    return 'newline'
+  else
+    return ''
+  endif
+endfunction
+
 function! statusline#BufferState()
   let l:checks = []
 
   call add(l:checks, statusline#CheckTrailing())
+  call add(l:checks, statusline#CheckNewline())
   call add(l:checks, statusline#CheckMixed())
   call add(l:checks, statusline#CheckFormat())
   call add(l:checks, statusline#CheckEncoding())
