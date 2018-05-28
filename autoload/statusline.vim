@@ -166,7 +166,7 @@ function! statusline#Active()
   elseif &buftype == 'quickfix'
     call statusline#QuickfixActive()
   else
-    setlocal statusline=
+    setlocal statusline=%#StatusLineModeBold#\ %{statusline#Mode()}\ %#StatusLine#\ %f
   endif
 endfunction
 
