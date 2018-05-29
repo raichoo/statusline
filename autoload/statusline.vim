@@ -22,15 +22,16 @@ hi StatusLineErrorsInactive guifg=#FD971F guibg=#455354 gui=bold
 
 set statusline=%#StatusLineModeNormal#\ %f
 
-let g:statusline_mode = ' '
-let g:statusline_modename = ' '
-let g:statusline_counter = 0
+let s:statusline_mode = ''
+let s:statusline_modename = ''
 
-function! statusline#Modename(mode)
+function! s:Modename(mode)
   if a:mode is# 'n'
     return 'NORMAL'
   elseif a:mode is# 'i'
     return "INSERT"
+  elseif a:mode is# 'c'
+    return "COMMAND"
   elseif a:mode is# 'v'
     return "VISUAL"
   elseif a:mode is# 'V'
@@ -41,8 +42,6 @@ function! statusline#Modename(mode)
     return "REPLACE"
   elseif a:mode is# 't'
     return "TERMINAL"
-  elseif a:mode is# 'c'
-    return "COMMAND"
   else
     return a:mode
   endif
@@ -51,18 +50,20 @@ endfunction
 function! statusline#Mode()
   let l:mode = mode()
 
-  if l:mode is# g:statusline_mode
-    let g:statusline_counter += 1
-    return g:statusline_modename
+  if l:mode is# s:statusline_mode
+    return s:statusline_modename
   else
-    let g:statusline_mode = l:mode
-    let g:statusline_modename = statusline#Modename(l:mode)
+    let s:statusline_mode = l:mode
+    let s:statusline_modename = s:Modename(l:mode)
     if l:mode is# 'n'
       hi! link StatusLineMode StatusLineModeNormal
       hi! link StatusLineModeBold StatusLineModeNormalBold
     elseif l:mode is# 'i'
       hi! link StatusLineMode StatusLineModeInsert
       hi! link StatusLineModeBold StatusLineModeInsertBold
+    elseif l:mode is# 'c'
+      hi! link StatusLineMode StatusLineModeCommand
+      hi! link StatusLineModeBold StatusLineModeCommandBold
     elseif l:mode is# 'v'
       hi! link StatusLineMode StatusLineModeVisual
       hi! link StatusLineModeBold StatusLineModeVisualBold
@@ -78,15 +79,12 @@ function! statusline#Mode()
     elseif l:mode is# 't'
       hi! link StatusLineMode StatusLineModeTerminal
       hi! link StatusLineModeBold StatusLineModeTerminalBold
-    elseif l:mode is# 'c'
-      hi! link StatusLineMode StatusLineModeCommand
-      hi! link StatusLineModeBold StatusLineModeCommandBold
     endif
-    return g:statusline_modename
+    return s:statusline_modename
   endif
 endfunction
 
-function! statusline#ActiveEdit()
+function! s:ActiveEdit()
   setlocal statusline=%#StatusLineModeBold#\ %{statusline#Mode()}
   setlocal statusline+=\ %#StatusLine#\ %<%f\ %m\ %R
   setlocal statusline+=%=
@@ -97,33 +95,33 @@ function! statusline#ActiveEdit()
   setlocal statusline+=%#StatusLineErrorsActive#%(\ %{get(b:,'statusline_errors','')}\ %)
 endfunction
 
-function! statusline#InactiveEdit()
+function! s:InactiveEdit()
   setlocal statusline=%#StatusLine#\ %<%f\ %m
   setlocal statusline+=%=
   setlocal statusline+=%#StatusLineErrorsInactive#%(\ %{get(b:,'statusline_errors','')}\ %)
 endfunction
 
-function! statusline#ActiveTerm()
+function! s:ActiveTerm()
   setlocal statusline=%#StatusLineModeBold#\ %{statusline#Mode()}
   setlocal statusline+=\ %#StatusLine#\ %<%{b:term_title}
   setlocal statusline+=%=
   setlocal statusline+=%#StatusLineMode#\ %3p%%\ %#StatusLineModeBold#PID\ %{b:terminal_job_pid}%#StatusLineMode#:%{b:terminal_job_id}\  "trailing
 endfunction
 
-function! statusline#InactiveTerm()
+function! s:InactiveTerm()
   setlocal statusline=%#StatusLine#\ %<%{b:term_title}
   setlocal statusline+=%=
   setlocal statusline+=PID\ %{b:terminal_job_pid}:%{b:terminal_job_id}\  "trailing
 endfunction
 
-function! statusline#QuickfixActive()
+function! s:QuickfixActive()
     setlocal statusline=%#StatusLineModeNormal#\ %f
     setlocal statusline+=\ %#StatusLine#\ %<%{w:quickfix_title}
     setlocal statusline+=%=
     setlocal statusline+=%#StatusLineModeNormal#\ %3p%%\ %#StatusLineModeNormalBold#%4l%#StatusLineModeNormal#:%-4L\  "trailing
 endfunction
 
-function! statusline#CheckMixed()
+function! s:CheckMixed()
   let l:mixed = search('\v(^\t+ +)|(^ +\t+)', 'nw')
 
   if l:mixed
@@ -133,7 +131,7 @@ function! statusline#CheckMixed()
   endif
 endfunction
 
-function! statusline#CheckTrailing()
+function! s:CheckTrailing()
   let l:trailing = search('\(\|\s\+\?\)$', 'nw')
 
   if l:trailing
@@ -143,7 +141,7 @@ function! statusline#CheckTrailing()
   endif
 endfunction
 
-function! statusline#CheckEncoding()
+function! s:CheckEncoding()
   if &fenc isnot# '' && &fenc isnot# 'utf-8'
     return 'encoding'
   else
@@ -151,7 +149,7 @@ function! statusline#CheckEncoding()
   endif
 endfunction
 
-function! statusline#CheckFormat()
+function! s:CheckFormat()
   if &ff isnot# 'unix'
     return 'format'
   else
@@ -159,7 +157,7 @@ function! statusline#CheckFormat()
   endif
 endfunction
 
-function! statusline#CheckNewline()
+function! s:CheckNewline()
   let l:newline = search('\n\%$', 'nw')
 
   if l:newline
@@ -172,11 +170,11 @@ endfunction
 function! statusline#BufferState()
   let l:checks = []
 
-  call add(l:checks, statusline#CheckTrailing())
-  call add(l:checks, statusline#CheckNewline())
-  call add(l:checks, statusline#CheckMixed())
-  call add(l:checks, statusline#CheckFormat())
-  call add(l:checks, statusline#CheckEncoding())
+  call add(l:checks, s:CheckTrailing())
+  call add(l:checks, s:CheckNewline())
+  call add(l:checks, s:CheckMixed())
+  call add(l:checks, s:CheckFormat())
+  call add(l:checks, s:CheckEncoding())
   call filter(l:checks, 'v:val isnot# ""')
 
   let b:statusline_errors = join(l:checks, ' ')
@@ -184,11 +182,11 @@ endfunction
 
 function! statusline#Active()
   if &buftype == ''
-    call statusline#ActiveEdit()
+    call s:ActiveEdit()
   elseif &buftype == 'terminal'
-    call statusline#ActiveTerm()
+    call s:ActiveTerm()
   elseif &buftype == 'quickfix'
-    call statusline#QuickfixActive()
+    call s:QuickfixActive()
   else
     setlocal statusline=%#StatusLineModeBold#\ %{statusline#Mode()}\ %#StatusLine#\ %f
   endif
@@ -196,9 +194,9 @@ endfunction
 
 function! statusline#Inactive()
   if &buftype == ''
-    call statusline#InactiveEdit()
+    call s:InactiveEdit()
   elseif &buftype == 'terminal'
-    call statusline#InactiveTerm()
+    call s:InactiveTerm()
   else
     setlocal statusline=\ %#StatusLine#%f
   endif
