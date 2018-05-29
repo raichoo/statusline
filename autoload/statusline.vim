@@ -22,43 +22,67 @@ hi StatusLineErrorsInactive guifg=#FD971F guibg=#455354 gui=bold
 
 set statusline=%#StatusLineModeNormal#\ %f
 
+let g:statusline_mode = ' '
+let g:statusline_modename = ' '
+let g:statusline_counter = 0
+
+function! statusline#Modename(mode)
+  if a:mode is# 'n'
+    return 'NORMAL'
+  elseif a:mode is# 'i'
+    return "INSERT"
+  elseif a:mode is# 'v'
+    return "VISUAL"
+  elseif a:mode is# 'V'
+    return "V-LINE"
+  elseif a:mode is# ''
+    return "V-BLOCK"
+  elseif a:mode is# 'R'
+    return "REPLACE"
+  elseif a:mode is# 't'
+    return "TERMINAL"
+  elseif a:mode is# 'c'
+    return "COMMAND"
+  else
+    return a:mode
+  endif
+endfunction
+
 function! statusline#Mode()
   let l:mode = mode()
 
-  if l:mode is# 'n'
-    hi! link StatusLineMode StatusLineModeNormal
-    hi! link StatusLineModeBold StatusLineModeNormalBold
-    return 'NORMAL'
-  elseif l:mode is# 'i'
-    hi! link StatusLineMode StatusLineModeInsert
-    hi! link StatusLineModeBold StatusLineModeInsertBold
-    return 'INSERT'
-  elseif l:mode is# 'v'
-    hi! link StatusLineMode StatusLineModeVisual
-    hi! link StatusLineModeBold StatusLineModeVisualBold
-    return 'VISUAL'
-  elseif l:mode is# 'V'
-    hi! link StatusLineMode StatusLineModeVLine
-    hi! link StatusLineModeBold StatusLineModeVLineBold
-    return 'V-LINE'
-  elseif l:mode is# ''
-    hi! link StatusLineMode StatusLineModeVBlock
-    hi! link StatusLineModeBold StatusLineModeVBlockBold
-    return 'V-BLOCK'
-  elseif l:mode is# 'R'
-    hi! link StatusLineMode StatusLineModeReplace
-    hi! link StatusLineModeBold StatusLineModeReplaceBold
-    return 'REPLACE'
-  elseif l:mode is# 't'
-    hi! link StatusLineMode StatusLineModeTerminal
-    hi! link StatusLineModeBold StatusLineModeTerminalBold
-    return 'TERMINAL'
-  elseif l:mode is# 'c'
-    hi! link StatusLineMode StatusLineModeCommand
-    hi! link StatusLineModeBold StatusLineModeCommandBold
-    return 'COMMAND'
+  if l:mode is# g:statusline_mode
+    let g:statusline_counter += 1
+    return g:statusline_modename
   else
-    return l:mode
+    let g:statusline_mode = l:mode
+    let g:statusline_modename = statusline#Modename(l:mode)
+    if l:mode is# 'n'
+      hi! link StatusLineMode StatusLineModeNormal
+      hi! link StatusLineModeBold StatusLineModeNormalBold
+    elseif l:mode is# 'i'
+      hi! link StatusLineMode StatusLineModeInsert
+      hi! link StatusLineModeBold StatusLineModeInsertBold
+    elseif l:mode is# 'v'
+      hi! link StatusLineMode StatusLineModeVisual
+      hi! link StatusLineModeBold StatusLineModeVisualBold
+    elseif l:mode is# 'V'
+      hi! link StatusLineMode StatusLineModeVLine
+      hi! link StatusLineModeBold StatusLineModeVLineBold
+    elseif l:mode is# ''
+      hi! link StatusLineMode StatusLineModeVBlock
+      hi! link StatusLineModeBold StatusLineModeVBlockBold
+    elseif l:mode is# 'R'
+      hi! link StatusLineMode StatusLineModeReplace
+      hi! link StatusLineModeBold StatusLineModeReplaceBold
+    elseif l:mode is# 't'
+      hi! link StatusLineMode StatusLineModeTerminal
+      hi! link StatusLineModeBold StatusLineModeTerminalBold
+    elseif l:mode is# 'c'
+      hi! link StatusLineMode StatusLineModeCommand
+      hi! link StatusLineModeBold StatusLineModeCommandBold
+    endif
+    return g:statusline_modename
   endif
 endfunction
 
